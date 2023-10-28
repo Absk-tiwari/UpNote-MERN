@@ -8,17 +8,18 @@ function AddNote() {
 
   const [note , setNote] =  useState({title : "", description : "", tag : ""})
   const onchange = (e) => {
-    setNote({...note, [e.target.name] : e.target.value});
+    console.log({...note});
+    setNote({...note, [e.target.name]: e.target.value});
   }
 
   const handleClick = (e) => {
     e.preventDefault();
-    addNote(note)
+    addNote(note);
   }
     return (
       <>
        <div className='container my-3'>
-          <h2>Add a note</h2>
+          <h2>Add One</h2>
         
         <form>
           <div className="mb-3">

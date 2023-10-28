@@ -2,110 +2,102 @@ import NoteContext from "./NoteContext";
 import { useState } from "react";
 
 const NoteState =(props)=>{
-    const notesInit =[
-        {
-          "_id": "653949f2d4d7b7c6684e262f5",
-          "user": "6537fff3a3c033cdc598e17b",
-          "title": "Need to escape",
-          "description": "Just don't go periodically , don't have a single and same routine!",
-          "tags": "General",
-          "date": "2023-10-25T17:01:38.499Z",
-          "__v": 0
-        },
-        {
-          "_id": "653949f2d4de7b7c6684262f5",
-          "user": "6537fff3a3c033cdc598e17b",
-          "title": "Need to escape",
-          "description": "Just don't go periodically , don't have a single and same routine!",
-          "tags": "General",
-          "date": "2023-10-25T17:01:38.499Z",
-          "__v": 0
-        },
-        {
-          "_id": "653949f2d4d7geb7c6684262f5",
-          "user": "6537fff3a3c033cdc598e17b",
-          "title": "Need to escape",
-          "description": "Just don't go periodically , don't have a single and same routine!",
-          "tags": "General",
-          "date": "2023-10-25T17:01:38.499Z",
-          "__v": 0
-        },
-        {
-          "_id": "653949f2d4d7b7cge6684262f5",
-          "user": "6537fff3a3c033cdc598e17b",
-          "title": "Need to escape",
-          "description": "Just don't go periodically , don't have a single and same routine!",
-          "tags": "General",
-          "date": "2023-10-25T17:01:38.499Z",
-          "__v": 0
-        },
-        {
-          "_id": "653949fsf2d4d7b7c6684262f5",
-          "user": "6537fff3a3c033cdc598e17b",
-          "title": "Need to escape",
-          "description": "Just don't go periodically , don't have a single and same routine!",
-          "tags": "General",
-          "date": "2023-10-25T17:01:38.499Z",
-          "__v": 0
-        },
-        {
-          "_id": "653949f2d4d7b7csf6684262f5",
-          "user": "6537fff3a3c033cdc598e17b",
-          "title": "Need to escape",
-          "description": "Just don't go periodically , don't have a single and same routine!",
-          "tags": "General",
-          "date": "2023-10-25T17:01:38.499Z",
-          "__v": 0
-        },
-        {
-          "_id": "653949f2df4d7b7c6684262f5",
-          "user": "6537fff3a3c033cdc598e17b",
-          "title": "Need to escape",
-          "description": "Just don't go periodically , don't have a single and same routine!",
-          "tags": "General",
-          "date": "2023-10-25T17:01:38.499Z",
-          "__v": 0
-        },
-        {
-          "_id": "653adf9b57cb92f8d1b07cb989",
-          "user": "6537fff3a3c033cdc598e17b",
-          "title": "Need to escape",
-          "description": "Just don't go periodically , don't have a single and same routine!",
-          "tags": "General",
-          "date": "2023-10-26T17:01:11.401Z",
-          "__v": 0
-        }
-      ];
-      
-    const [notes,setNotes] = useState(notesInit);
+    const notesInit =[];
+    // eslint-disable-next-line
+    const host = 'http://192.168.93.154:1901'      
+    const [notes, setNotes] = useState(notesInit);
    
-    const addNote = (title, description, tag) => {
-      console.log('gointo add');
-
-      const note = {
-        "_id": "sdsdsdsd",
-        "user": "sdsdsdsdsdsd",
-        "title": "Need to escape ADDED",
-        "description": "Just don't go periodically ADDED!",
-        "tags": "General ADDED",
-        "date": "2023-10-26T17:01:11.401Z",
-        "__v": 0
-      };
-      setNotes(notes.concat(note))
+    const fetchNotes = async() => {
+       try{
+  
+          const response = await fetch(`${host}/api/notes/fetchall`,{
+            method : 'GET',
+            headers : {
+              'Content-Type' : 'application/json',
+              'auth-token' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjUzN2ZmZjNhM2MwMzNjZGM1OThlMTdiIn0sImlhdCI6MTY5ODE3MTM4MH0.rP-ygqi1OZ4PIFsz2tHV6glU7vLceWnS-tYWjOgMIwg'
+            }
+          });
+          const data = await response.json();
+          setNotes(data);
+  
+       }catch(error) {
+          alert(error.message);
+          console.log(error.message);        
+       }
     }
 
-    const editNote = () => {
+    const addNote = async ({title, description, tag}) => {
+      console.log('gointo add', title, description, tag);      
+       try{
 
+          const response = await fetch(`${host}/api/notes/create`, {
+              method : 'POST',
+              headers : {
+                'Content-Type': 'application/json',
+                'auth-token' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjUzN2ZmZjNhM2MwMzNjZGM1OThlMTdiIn0sImlhdCI6MTY5ODE3MTM4MH0.rP-ygqi1OZ4PIFsz2tHV6glU7vLceWnS-tYWjOgMIwg'
+              },
+              body: JSON.stringify({title,description,tag})
+          });
+          const added = await response.json();
+          console.log(added);
+          setNotes(notes.concat(added));
+
+      } catch (error) {
+        alert(error.message);
+        console.log(error.message);        
+      }
+    }
+
+    const editNote = async({id, title, description, tag}) => {
+      console.table({id, title, description, tag})
+      try{
+        const resp = await fetch(`${host}/api/notes/update/${id}`,{
+          method : 'PUT',
+          header : {
+            'Content-Type': 'application/json',
+            'auth-token' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjUzN2ZmZjNhM2MwMzNjZGM1OThlMTdiIn0sImlhdCI6MTY5ODE3MTM4MH0.rP-ygqi1OZ4PIFsz2tHV6glU7vLceWnS-tYWjOgMIwg'
+          },
+          body : JSON.stringify({title: title, description: description,tag: tag})
+        });
+        const updated = await resp.json();
+        console.log(updated);
+       
+        for(let i=0; i < notes.length; i++){
+          if(notes[i]._id === id){
+            notes[i].title = title;
+            notes[i].description = description;
+            notes[i].tag = tag;
+          }
+        }
+      } catch (error) {
+        alert(error.message);
+        console.log(error.message);        
+      }
     }
  
-    const deleteNote = (id) => {
+    const deleteNote = async(id) => {
       console.log(`Deleting note with id ${id}`);
-      const newNote = notes.filter(note=>{return note._id!==id});
-      setNotes(newNote)
+      try {
+          const response = await fetch(`${host}/api/notes/delete/${id}`, {
+            method : 'DELETE',
+            headers : {
+              'Content-Type': 'application/json',
+              'auth-token' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjUzN2ZmZjNhM2MwMzNjZGM1OThlMTdiIn0sImlhdCI6MTY5ODE3MTM4MH0.rP-ygqi1OZ4PIFsz2tHV6glU7vLceWnS-tYWjOgMIwg'
+            }
+          });
+          if(response){
+            const newNote = notes.filter(item=>{return item._id!==id});
+            setNotes(newNote)
+          }
+        
+      } catch (error) {
+        alert(error.message);
+        console.log(error.message);        
+      }
     }
 
     return (
-        <NoteContext.Provider value={{notes, addNote, editNote, deleteNote}}>
+        <NoteContext.Provider value={{notes, addNote, editNote, deleteNote, fetchNotes}}>
             {props.children}
         </NoteContext.Provider>
     )
