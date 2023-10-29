@@ -11,3 +11,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+p, label {
+  font-family: monospace;
+}
+
+.btn {
+  font-family: cursive;
+}
+
+/* body{
+  
+  background-image: url('/public/bg.jpg');
+} */

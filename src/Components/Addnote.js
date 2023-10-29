@@ -8,13 +8,13 @@ function AddNote() {
 
   const [note , setNote] =  useState({title : "", description : "", tag : ""})
   const onchange = (e) => {
-    console.log({...note});
     setNote({...note, [e.target.name]: e.target.value});
   }
 
   const handleClick = (e) => {
     e.preventDefault();
     addNote(note);
+    setNote({title:"", description:"",tag:""});
   }
     return (
       <>
@@ -24,18 +24,18 @@ function AddNote() {
         <form>
           <div className="mb-3">
             <label htmlFor="title" className="form-label">Title</label>
-            <input type="text" onChange={onchange} className="form-control"  name='title' id="title" />
+            <input type="text" value={note.title} onChange={onchange} className="form-control" minLength={5} required  name='title' id="title" />
           </div>
           <div className="mb-3">
             <label htmlFor="tag" className="form-label">Tags</label>
-            <input type="text" onChange={onchange} className="form-control" name='tag' id="tag"/>
+            <input type="text" value={note.tag} onChange={onchange} className="form-control" minLength={5} required name='tag' id="tag"/>
           </div>
           <div className="mb-3">
             <label htmlFor="desc" className="form-label">Description</label>
-            <input type="text" onChange={onchange} className="form-control" name='description' id="desc"/>
+            <input type="text"  value={note.description} onChange={onchange} className="form-control" minLength={5} required name='description' id="desc"/>
           </div>
            
-          <button type="sumit" className="btn btn-success btn-round-sm" onClick={handleClick} >Submit</button>
+          <button type="submit" disabled={note.title.length<5 || note.description.length < 8 ? true : ""} className="btn btn-success btn-round-sm" onClick={handleClick} >Submit</button>
         </form>
         </div>
       </>

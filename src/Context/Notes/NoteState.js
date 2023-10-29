@@ -27,7 +27,6 @@ const NoteState =(props)=>{
     }
 
     const addNote = async ({title, description, tag}) => {
-      console.log('gointo add', title, description, tag);      
        try{
 
           const response = await fetch(`${host}/api/notes/create`, {
@@ -39,7 +38,6 @@ const NoteState =(props)=>{
               body: JSON.stringify({title,description,tag})
           });
           const added = await response.json();
-          console.log(added);
           setNotes(notes.concat(added));
 
       } catch (error) {
@@ -49,26 +47,28 @@ const NoteState =(props)=>{
     }
 
     const editNote = async({id, title, description, tag}) => {
-      console.table({id, title, description, tag})
       try{
-        const resp = await fetch(`${host}/api/notes/update/${id}`,{
+         await fetch(`${host}/api/notes/update/${id}`,{
           method : 'PUT',
-          header : {
-            'Content-Type': 'application/json',
+          headers : {
+            'Content-Type' : 'application/json',
             'auth-token' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjUzN2ZmZjNhM2MwMzNjZGM1OThlMTdiIn0sImlhdCI6MTY5ODE3MTM4MH0.rP-ygqi1OZ4PIFsz2tHV6glU7vLceWnS-tYWjOgMIwg'
           },
           body : JSON.stringify({title: title, description: description,tag: tag})
         });
-        const updated = await resp.json();
-        console.log(updated);
+ 
+        const newNote = JSON.parse(JSON.stringify(notes));
        
         for(let i=0; i < notes.length; i++){
           if(notes[i]._id === id){
-            notes[i].title = title;
-            notes[i].description = description;
-            notes[i].tag = tag;
+            newNote[i].title = title;
+            newNote[i].description = description;
+            newNote[i].tag = tag;
+            break;
           }
         }
+        setNotes(newNote);
+
       } catch (error) {
         alert(error.message);
         console.log(error.message);        
